@@ -1,0 +1,52 @@
+version: "0.1"
+
+volumes:
+  postgres-volume:
+
+services:
+  frontend:
+    build: frontend/
+    restart: always
+    depends_on:
+      - "backend"
+    ports:
+      - 80:80
+    networks:
+      net:
+        ipv4_address: 192.168.240.4
+
+  backend:
+    build: backend/
+    restart: always
+    depends_on:
+      - "postgres"
+    ports:
+      - 3000:3000
+    networks:
+      net:
+        ipv4_address: 192.168.240.3
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres-volume:/var/lib/postgresql/data
+    networks:
+      net:
+        ipv4_address: 192.168.240.2
+
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.240.0/24
