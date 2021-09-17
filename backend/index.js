@@ -19,6 +19,10 @@ const main = async () => {
             res.send(query)
         })
 
+        app.get('/api/', function (req, res) {
+            res.send("Api request")
+        })
+
         app.listen(3000)
     } catch (error) {
         console.error('Unable to connect to the database:', error);
